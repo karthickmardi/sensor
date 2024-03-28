@@ -1,0 +1,13 @@
+---
+ref: pyro_alert
+name: pyro_alert
+description: pack for Pyro service restart
+keywords:
+  - pyro
+  - restart
+version: 3.8.0
+python_versions:
+  - "2"
+  - "3"
+author: Vishnupriya S
+email: sv14@ccf.org

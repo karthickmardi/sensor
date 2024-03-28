@@ -1,0 +1,59 @@
+version: 1.0
+input:
+  - sys_id
+  - short_description
+  - description
+vars:
+  - servicenow_username: admin
+  - servicenow_pwd:
+  - servicenow_endpoint: https://.service-now.com//api/now/table/incident
+  - serverName: 
+tasks:
+  change_assignment_group:
+    action: core.http
+    input:
+      url: "{{ ctx().servicenow_endpoint }}/{{ ctx().sys_id }}"
+      body: "{\"assignment_group\":\"Help Desk\",\n \"assigned_to\":\"\"}"
+      method: PUT
+      headers:
+        Content-Type: application/json
+      username: <% ctx(servicenow_username) %>
+      password: <% ctx(servicenow_pwd) %>
+      verify_ssl_cert: false
+    next:
+      - when: <% succeeded() %>
+        publish:
+          - task1: "Webhook triggered; Ticket assigned for Automation(currently Help desk)"
+        do:
+          - is_server_active
+
+  # [342, 248]
+  is_server_active:
+    action: core.remote
+    input:
+      cmd: nc -zv <% ctx(serverName) %> 22
+      hosts: <% ctx(serverName) %>
+      username: digitalxc
+      password: "testinh"
+    next:
+      - when: <% succeeded() %>
+        publish:
+          - status: "Server is active. Apache restarted successfully. Ticket will be resolved."
+        do:
+          - resolve_ticket
+  resolve_ticket:
+    action: core.http
+    input:
+      url: "{{ ctx().servicenow_endpoint }}/{{ ctx().sys_id }}"
+      body: "{\"assignment_group\":\"Network\",\n \"assigned_to\":\"\",\n\"state\":\"Resolved\",\n\"work_notes\":\"Server is active. Successfully restarted the service and resolved the ticket\"}"
+      method: PUT
+      headers:
+        Content-Type: application/json
+      username: <% ctx(servicenow_username) %>
+      password: <% ctx(servicenow_pwd) %>
+      verify_ssl_cert: false
+    next:
+      - publish:
+          - status: "Automation done successfully; ticket resolved"
+output:
+  - result: <% ctx(status) %>

@@ -1,0 +1,12 @@
+---
+name: pyro_alert_rule
+pack: pyro_alert # Replace with your actual pack name
+enabled: true
+trigger:
+  type: pyro_alert.restart # Replace with your actual sensor trigger name
+action:
+  ref: pyro_alert.pyro_restart # Replace with your actual action name
+  parameters:
+    sys_id: "{{ trigger.sys_id }}"
+    short_description: "{{ trigger.short_description }}"
+    description: "{{ trigger.description }}"

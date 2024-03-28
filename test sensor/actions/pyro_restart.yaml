@@ -1,0 +1,20 @@
+---
+pack: pyro_alert
+enabled: true
+runner_type: orquesta
+name: pyro_restart
+entry_point: workflows/pyro_restart.yaml
+description: Pyro service restart
+parameters:
+  sys_id:
+    type: string
+    description: Gets the servicenow ticket id for the particular incident from webhook
+    required: true
+  description:
+    type: string
+    description: Gets the ticket description from the webhook
+    required: true
+  short_description:
+    type: string
+    description: Gets the server name from the webhook
+    required: true

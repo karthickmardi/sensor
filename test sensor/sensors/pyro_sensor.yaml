@@ -1,0 +1,16 @@
+---
+class_name: PyroIncidentSensor
+entry_point: pyro_sensor.py
+description: "Pyro service alerts sensor that emits triggers."
+trigger_types:
+  - name: restart
+    description: "Pyro service alert trigger."
+    payload_schema:
+      type: "object"
+      properties:
+        sys_id:
+          type: "string"
+        description:
+          type: "string"
+        short_description:
+          type: "string"
